@@ -51,10 +51,8 @@ const checkMeetingTime = (workdayStart, workdayEnd, meetingStart, meetingDuratio
     return +hours * 60 + +minutes;
   };
 
-  if (convertTimeToMinutes(workdayStart) <= convertTimeToMinutes(meetingStart) &&
-    convertTimeToMinutes(workdayEnd) >= convertTimeToMinutes(meetingStart) + meetingDuration) {
-    return true;
-  } return false;
+  return convertTimeToMinutes(workdayStart) <= convertTimeToMinutes(meetingStart) &&
+    convertTimeToMinutes(workdayEnd) >= convertTimeToMinutes(meetingStart) + meetingDuration;
 };
 
 checkMeetingTime('08:00', '17:30', '14:00', 90); // true
