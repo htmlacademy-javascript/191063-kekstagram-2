@@ -44,3 +44,19 @@ extractNumbers('а я томат'); // NaN
 extractNumbers(2023); // 2023
 extractNumbers(-1); // 1
 extractNumbers(1.5); // 15
+
+const checkMeetingTime = (workdayStart, workdayEnd, meetingStart, meetingDuration) => {
+  const convertTimeToMinutes = (time) => {
+    const [hours, minutes] = time.split(':');
+    return +hours * 60 + +minutes;
+  };
+
+  return convertTimeToMinutes(workdayStart) <= convertTimeToMinutes(meetingStart) &&
+    convertTimeToMinutes(workdayEnd) >= convertTimeToMinutes(meetingStart) + meetingDuration;
+};
+
+checkMeetingTime('08:00', '17:30', '14:00', 90); // true
+checkMeetingTime('8:0', '10:0', '8:0', 120); // true
+checkMeetingTime('08:00', '14:30', '14:00', 90); // false
+checkMeetingTime('14:00', '17:30', '08:0', 90); // false
+checkMeetingTime('8:00', '17:30', '08:00', 900); // false
