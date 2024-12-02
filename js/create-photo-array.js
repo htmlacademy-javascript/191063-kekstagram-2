@@ -71,8 +71,8 @@ const createPhoto = () => ({
   comments: Array.from({length: getRandomInteger(Comments.MIN, Comments.MAX)}, createComment),
 });
 
-// Функция для создания массива из постов с разными фотографиями.
+// Создание массива из постов с разными фотографиями.
 // Количество постов, определяется переменной PHOTO_COUNT.
-const createPhotoArray = () => Array.from({length: PHOTO_COUNT}, createPhoto);
+const photoArray = Array.from({length: PHOTO_COUNT}, createPhoto);
 
-export {createPhotoArray};
+export {photoArray};
