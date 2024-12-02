@@ -18,5 +18,6 @@ const getConsecutiveNumber = () => {
   };
 };
 
+const isEscapeKey = (evt) => evt.key === 'Escape';
 
-export {getRandomInteger, getConsecutiveNumber};
+export {getRandomInteger, getConsecutiveNumber, isEscapeKey};
