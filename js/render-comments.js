@@ -1,50 +1,68 @@
 const COMMENTS_STEP = 5;
-let availableComments = [];
-let commentShownCount = 0;
 
-const bigPictureBlock = document.querySelector('.big-picture');
-const bigPictureCommentShownCount = bigPictureBlock.querySelector('.social__comment-shown-count');
-const bigPictureCommentTotalCount = bigPictureBlock.querySelector('.social__comment-total-count');
-const bigPictureComments = bigPictureBlock.querySelector('.social__comments');
-const bigPictureCommentTemplate = bigPictureBlock.querySelector('.social__comment');
-const bigPictureCommentsLoader = bigPictureBlock.querySelector('.comments-loader');
+const bigPicture = document.querySelector('.big-picture');
+const socialComments = bigPicture.querySelector('.social__comments');
+const socialCommentShownCount = bigPicture.querySelector('.social__comment-shown-count');
+const commentsLoaderButton = bigPicture.querySelector('.social__comments-loader');
+const fragment = document.createDocumentFragment();
 
-const renderComment = ({ avatar, name, message }) => {
-  const newComment = bigPictureCommentTemplate.cloneNode(true);
-  newComment.querySelector('.social__picture').src = avatar;
-  newComment.querySelector('.social__picture').alt = name;
-  newComment.querySelector('.social__text').textContent = message;
-  return newComment;
+let startCommentsCount = 5;
+let comments;
+
+const getTemplateComment = ({ id, avatar, message, name }) => {
+  const templateCommentElement = document.querySelector('#social__comment').content.querySelector('.social__comment');
+  const templateComment = templateCommentElement.cloneNode(true);
+
+  templateComment.dataset.commentId = id;
+  templateComment.querySelector('.social__picture').src = avatar;
+  templateComment.querySelector('.social__text').textContent = message;
+  templateComment.querySelector('.social__picture').alt = name;
+
+  return templateComment;
 };
 
-const renderMoreComments = () => {
-  const fragment = new DocumentFragment;
-  const nextComments = availableComments.slice(0, COMMENTS_STEP);
-  availableComments = availableComments.slice(COMMENTS_STEP);
-  nextComments.forEach((comment) => {
-    fragment.append(renderComment(comment));
-    commentShownCount++;
-  });
-  bigPictureComments.append(fragment);
+const renderComments = (data) => {
+  comments = data;
 
-  bigPictureCommentShownCount.textContent = commentShownCount;
-  if (availableComments.length <= 0) {
-    bigPictureCommentsLoader.classList.add('hidden');
+  if (comments.length <= COMMENTS_STEP) {
+    socialCommentShownCount.textContent = comments.length;
+
+    comments.forEach((comment) => {
+      fragment.append(getTemplateComment(comment));
+    });
+
+    commentsLoaderButton.classList.add('hidden');
+  } else {
+    commentsLoaderButton.classList.remove('hidden');
+    socialCommentShownCount.textContent = startCommentsCount;
+
+    for (let i = 0; i < startCommentsCount; i++) {
+      if (i < comments.length) {
+        fragment.append(getTemplateComment(comments[i]));
+      }
+
+      if (comments.length <= startCommentsCount) {
+        socialCommentShownCount.textContent = comments.length;
+        commentsLoaderButton.classList.add('hidden');
+      }
+    }
   }
+
+  socialComments.append(fragment);
 };
 
-const renderComments = (arrayOfComments) => {
-  bigPictureCommentTotalCount.textContent = arrayOfComments.length;
-  bigPictureComments.textContent = '';
-  availableComments = [...arrayOfComments];
-  renderMoreComments();
+const onCommentsLoaderButtonClick = () => {
+  socialComments.textContent = '';
+  startCommentsCount += COMMENTS_STEP;
+  renderComments(comments);
 };
 
 const clearComments = () => {
-  commentShownCount = 0;
-  bigPictureCommentsLoader.classList.remove('hidden');
+  socialComments.textContent = '';
+  startCommentsCount = COMMENTS_STEP;
+  socialCommentShownCount.textContent = startCommentsCount;
 };
 
-bigPictureCommentsLoader.addEventListener('click', renderMoreComments);
+commentsLoaderButton.addEventListener('click', onCommentsLoaderButtonClick);
 
-export {renderComments, clearComments};
+export { renderComments, clearComments };
